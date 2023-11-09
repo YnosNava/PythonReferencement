@@ -13,6 +13,14 @@ def supprimer_balises_html(texte_html):
     soupe = BeautifulSoup(texte_html, 'html.parser')
     return soupe.get_text()
 
+def charger_parasites(chemin_fichier):
+    with open(chemin_fichier, 'r', encoding='utf-8') as fichier:
+        parasites = fichier.read().splitlines()
+    return parasites
+
+def supprimer_parasites(occurrences, parasites):
+    return {mot: occurrences[mot] for mot in occurrences if mot not in parasites}
+
 def extraire_valeurs_attribut(texte_html, balise, attribut):
     soupe = BeautifulSoup(texte_html, 'html.parser')
     return [element.get(attribut) for element in soupe.find_all(balise) if element.has_attr(attribut)]
@@ -25,14 +33,6 @@ def compter_occurrences(texte):
     for mot in mots:
         occurrences[mot] = occurrences.get(mot, 0) + 1
     return dict(sorted(occurrences.items(), key=lambda item: item[1], reverse=True))
-
-def supprimer_parasites(occurrences, parasites):
-    return {mot: occurrences[mot] for mot in occurrences if mot not in parasites}
-
-def charger_parasites(chemin_fichier):
-    with open(chemin_fichier, 'r', encoding='utf-8') as fichier:
-        parasites = fichier.read().splitlines()
-    return parasites
 
 def audit_ref_seo(url, chemin_parasites):
     html = recuperer_html(url)
